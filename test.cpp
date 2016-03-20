@@ -1,6 +1,9 @@
 #include "precomp.h"
 #include "shapelib.h"
 
+b2Vec2 gravity(0.0f, -10.0f);
+b2World world(gravity);
+
 GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path) {
   GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
   GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -120,14 +123,12 @@ int main(int argc, char *argv[])
   }
 
   InitializeJoysticks();
-	
+
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_Window *window = SDL_CreateWindow("Hello World", 100, 100, 1024, 768, SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE|SDL_WINDOW_OPENGL);
 	//SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-
 
 	//SDL_Surface *temp = SDL_LoadBMP("sdl_logo.bmp");
 	//SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, temp);
@@ -167,13 +168,16 @@ int main(int argc, char *argv[])
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
   CoordinateHelper::SetGameDimensions(1024, 768);
-  std::string filename = "wood.bmp";
-  TexturedRectangle rectangle(100, 100, 600, 100, filename, texID);
+  std::string filename2 = "BumpTexture.bmp";
+  std::string filename1 = "wood.bmp";
+  TexturedRectangle rectangle(100, 150, 600, 40, filename1, texID);
   rectangle.Initialize();
-  TexturedRectangle rectangle2(300, 300, 600, 150, filename, texID);
+  TexturedRectangle rectangle2(300, 300, 600, 60, filename1, texID);
   rectangle2.Initialize();
-  TexturedRectangle rectangle3(500, 500, 300, 250, filename, texID);
+  TexturedRectangle rectangle3(50, 500, 800, 70, filename1, texID);
   rectangle3.Initialize();
+  TexturedRectangle rectangle4(200, 0, 60, 60, filename2, texID);
+  rectangle4.Initialize();
   // SDL_FreeSurface(temp);
 	SDL_Event event;
 	int gameover = 0;
@@ -225,6 +229,7 @@ int main(int argc, char *argv[])
     rectangle.Draw();
     rectangle2.Draw();
     rectangle3.Draw();
+    rectangle4.Draw();
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 		//SDL_RenderClear(renderer);

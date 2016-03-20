@@ -16,6 +16,7 @@ class TexturedRectangle : public Rectangle {
   GLfloat *_uvBuffer;
   SDL_Surface* _surface;
   std::string _filename;
+  b2Body* _body;
 };
 
 #endif

@@ -13,6 +13,12 @@ TexturedRectangle::TexturedRectangle(
 }
 
 TexturedRectangle::~TexturedRectangle() {
+  _body = nullptr;
+
+  if (_uvBuffer) {
+    delete _uvBuffer;
+    _uvBuffer = nullptr;
+  }
 }
 
 bool TexturedRectangle::Draw() {
@@ -38,6 +44,27 @@ bool TexturedRectangle::Draw() {
 bool TexturedRectangle::Initialize() {
   // Call base class
   if (Rectangle::Initialize()) {
+    //Initialize the physics geometry
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(0.0f, 4.0f);
+
+    _body = world.CreateBody(&bodyDef);
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    if (_body) {
+      _body->CreateFixture(&fixtureDef);
+    }
+    else {
+      std::cout << "Error creating box2d body" << std::endl;
+    }
+
     _surface = SDL_LoadBMP(_filename.c_str());
 
     if (_surface) {
