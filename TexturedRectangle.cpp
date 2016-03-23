@@ -10,6 +10,7 @@ TexturedRectangle::TexturedRectangle(
        GLuint programTexID) : Rectangle(left, top, width, height) {
   _filename = filename;
   _progTexID = programTexID;
+  _uvBuffer = nullptr;
 }
 
 TexturedRectangle::~TexturedRectangle() {
@@ -65,10 +66,14 @@ bool TexturedRectangle::Initialize() {
       std::cout << "Error creating box2d body" << std::endl;
     }
 
+#ifdef WINDOWS
+	_textureID = SOIL_load_OGL_texture(_filename.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	if (_textureID != 0) {
+#else
     _surface = SDL_LoadBMP(_filename.c_str());
-
     if (_surface) {
-      std::cout << "Setting up texture: " << _filename << std::endl;
+#endif
+      std::cout << "Setting up texture: " << _filename.c_str() << std::endl;
 
       std::cout << "Setting up the uv matrix ..." << std::endl;
       _uvBuffer = new GLfloat[_numVertices*2] {
@@ -95,8 +100,8 @@ bool TexturedRectangle::Initialize() {
       glGenBuffers(1, &_uvBufferID);
       glBindBuffer(GL_ARRAY_BUFFER, _uvBufferID);
       glBufferData(GL_ARRAY_BUFFER, (_numVertices * 2) * sizeof(GLfloat), _uvBuffer, GL_STATIC_DRAW);
-
-      glGenTextures(1, &_textureID);
+#ifndef WINDOWS
+	  glGenTextures(1, &_textureID);
       glBindTexture(GL_TEXTURE_2D, _textureID);
 
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _surface->w, _surface->h, 0, GL_BGR, GL_UNSIGNED_BYTE, _surface->pixels);
@@ -105,6 +110,7 @@ bool TexturedRectangle::Initialize() {
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
       glGenerateMipmap(GL_TEXTURE_2D);
+#endif
     }
 
     return true;

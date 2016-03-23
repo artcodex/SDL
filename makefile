@@ -1,11 +1,13 @@
 CXX = clang++
-SDL = -framework SDL2
-OPENGL = -framework OpenGL
+LD = /usr/i686-pc-mingw32/bin/ld
+SDL = -lSDL2
+OPENGL = -lopengl32
 BOX2D = -lBox2D
+GLEW = -lGlew32
 
-CXXFLAGS = -F/Library/Frameworks -I/Users/avibrenner/Documents/Projects/Box2D/Box2D -Wall -c -std=c++11
-LDFLAGS = -F/Library/Frameworks -L/usr/local/lib $(SDL) $(OPENGL) $(BOX2D)
-LIBS = $(BOX2D)
+CXXFLAGS = -IC:\Source\Projects\Box2D\Box2D -IC:\Users\abrenner\Downloads\SDL2-devel-2.0.4-VC\SDL2-2.0.4\include -IC:\Users\abrenner\Downloads\glew-1.13.0-win32\glew-1.13.0\include -Wall -c -std=c++11
+LDFLAGS = -L.\libs
+LIBS = $(BOX2D) $(SDL) $(OPENGL) $(GLEW)
 EXE = test
 EXE_DETAIL = testd
 
@@ -16,7 +18,6 @@ $(EXE): test.o rectangle.o texturedrectangle.o shape.o coordinatehelper.o
 
 $(EXE_DETAIL): test.o rectangle.o texturedrectangle.o shape.o coordinatehelper.o
 				$(CXX) $(LDFLAGS) $^ -o $@ -v $(LIBS)
-
 
 test.o: test.cpp
 				$(CXX) $(CXXFLAGS) $< -o $@

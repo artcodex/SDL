@@ -14,7 +14,9 @@ class TexturedRectangle : public Rectangle {
   GLuint _uvBufferID;
   GLuint _progTexID;
   GLfloat *_uvBuffer;
+#ifndef WINDOWS
   SDL_Surface* _surface;
+#endif
   std::string _filename;
   b2Body* _body;
 };

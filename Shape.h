@@ -3,7 +3,8 @@
 
 class Shape
 {
- public:
+ public:	
+  Shape() : _buffer(nullptr) { }
   virtual bool Initialize() = 0;
   virtual bool Draw();
   ~Shape();
