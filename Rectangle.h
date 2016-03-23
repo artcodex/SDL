@@ -8,13 +8,18 @@
 class Rectangle : public Shape
 {
  public:
-  Rectangle(GLint left, GLint top, GLint width, GLint height);
+  Rectangle(GLfloat left, GLfloat top, GLfloat width, GLfloat height, float32 density);
   virtual bool Initialize() override;
+  virtual bool Update() override;
+  ~Rectangle();
+  void SetBounds(GLfloat left, GLfloat top, GLfloat width, GLfloat height);
  protected:
-  GLint _top;
-  GLint _left;
-  GLint _width;
-  GLint _height;
+  GLfloat _top;
+  GLfloat _left;
+  GLfloat _width;
+  GLfloat _height;
+  b2Body* _body;
+  float32 _density;
 };
 
 #endif

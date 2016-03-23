@@ -5,7 +5,7 @@
 
 class TexturedRectangle : public Rectangle {
  public:
-  TexturedRectangle(GLint left, GLint top, GLint width, GLint height, std::string& filename, GLuint programTexID);
+  TexturedRectangle(GLfloat left, GLfloat top, GLfloat width, GLfloat height, float32 density, std::string& filename, GLuint programTexID);
   ~TexturedRectangle();
   virtual bool Initialize();
   virtual bool Draw();
@@ -16,7 +16,6 @@ class TexturedRectangle : public Rectangle {
   GLfloat *_uvBuffer;
   SDL_Surface* _surface;
   std::string _filename;
-  b2Body* _body;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "shapelib.h"
 
-b2Vec2 gravity(0.0f, -10.0f);
+b2Vec2 gravity(0.0f, -9.8f);
 b2World world(gravity);
 
 GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path) {
@@ -167,21 +167,23 @@ int main(int argc, char *argv[])
 	//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-  CoordinateHelper::SetGameDimensions(1024, 768);
+  CoordinateHelper::SetGameDimensions(1024.0f, 768.0f);
   std::string filename2 = "BumpTexture.bmp";
   std::string filename1 = "wood.bmp";
-  TexturedRectangle rectangle(100, 150, 600, 40, filename1, texID);
+  TexturedRectangle rectangle(10.0f, -0.0f, 15.0f, 10.0f, 7.0f, filename1, texID);
   rectangle.Initialize();
-  TexturedRectangle rectangle2(300, 300, 600, 60, filename1, texID);
+  TexturedRectangle rectangle2(300.0f, -500.0f, 245.0f, 60.0f, 10.0f, filename1, texID);
   rectangle2.Initialize();
-  TexturedRectangle rectangle3(50, 500, 800, 70, filename1, texID);
+  TexturedRectangle rectangle3(50.0f, -200.0f, 140.0f, 40.0f, 2.0f, filename2, texID);
   rectangle3.Initialize();
-  TexturedRectangle rectangle4(200, 0, 60, 60, filename2, texID);
+  TexturedRectangle rectangle4(200.0f, 0.0f, 60.0f, 60.0f, 20.0f, filename2, texID);
   rectangle4.Initialize();
   // SDL_FreeSurface(temp);
 	SDL_Event event;
 	int gameover = 0;
-
+  float32 timeStep = 1.0f / 60.0f;
+  int32 velocityIterations = 6;
+  int32 positionIterations = 2;
 
 	while (!gameover)
 	{
@@ -226,6 +228,12 @@ int main(int argc, char *argv[])
 				    );*/
 
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
+    world.Step(timeStep, velocityIterations, positionIterations);
+    rectangle.Update();
+    rectangle2.Update();
+    rectangle3.Update();
+    rectangle4.Update();
+    
     rectangle.Draw();
     rectangle2.Draw();
     rectangle3.Draw();

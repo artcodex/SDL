@@ -2,19 +2,18 @@
 #include "TexturedRectangle.h"
 
 TexturedRectangle::TexturedRectangle(
-       GLint left,
-       GLint top,
-       GLint width,
-       GLint height,
+       GLfloat left,
+       GLfloat top,
+       GLfloat width,
+       GLfloat height,
+       float32 density,
        std::string& filename,
-       GLuint programTexID) : Rectangle(left, top, width, height) {
+       GLuint programTexID) : Rectangle(left, top, width, height, density) {
   _filename = filename;
   _progTexID = programTexID;
 }
 
 TexturedRectangle::~TexturedRectangle() {
-  _body = nullptr;
-
   if (_uvBuffer) {
     delete _uvBuffer;
     _uvBuffer = nullptr;
@@ -44,29 +43,8 @@ bool TexturedRectangle::Draw() {
 bool TexturedRectangle::Initialize() {
   // Call base class
   if (Rectangle::Initialize()) {
-    //Initialize the physics geometry
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(0.0f, 4.0f);
-
-    _body = world.CreateBody(&bodyDef);
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
-
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-
-    if (_body) {
-      _body->CreateFixture(&fixtureDef);
-    }
-    else {
-      std::cout << "Error creating box2d body" << std::endl;
-    }
-
     _surface = SDL_LoadBMP(_filename.c_str());
-
+ 
     if (_surface) {
       std::cout << "Setting up texture: " << _filename << std::endl;
 
@@ -83,7 +61,7 @@ bool TexturedRectangle::Initialize() {
       std::cout << "UV coord space: " << std::endl;
       for (int i=0; i < _numVertices*2; i++)
         {
-          std::cout << _buffer[i] << " ";
+          std::cout << _uvBuffer[i] << " ";
 
           if (((i + 1) % 2) == 0) {
             std::cout << std::endl;

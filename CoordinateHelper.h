@@ -5,13 +5,21 @@ class CoordinateHelper
 {
  public:
  
-  static void SetGameDimensions(GLint width, GLint height) {
+  static void SetGameDimensions(GLfloat width, GLfloat height) {
     _gameWidth = width; _gameHeight = height;
     std::cout << "Dimensions = (" << width << ", " << height << ")" << std::endl; 
   }
 
-  static GLfloat TranslateXToOpenGL(GLint x, bool scaleOnly = false) {
-    std::cout << "Params X = (" << x << ", " << _gameWidth << ")" << std::endl;
+  static GLfloat getGameHeight() {
+    return _gameHeight;
+  }
+
+  static GLfloat getGameWidth() {
+    return _gameWidth;
+  }
+
+  static GLfloat TranslateXToOpenGL(GLfloat x, bool scaleOnly = false) {
+    // std::cout << "Params X = (" << x << ", " << _gameWidth << ")" << std::endl;
     if (x >= 0 &&
         x < _gameWidth&&
         _gameWidth > 0)
@@ -36,14 +44,14 @@ class CoordinateHelper
     }
   }
 
-  static GLfloat TranslateYToOpenGL(GLint y, bool scaleOnly = false) {
-    std::cout << "Params Y = (" << y << ", " << _gameHeight << ")" << std::endl;
+  static GLfloat TranslateYToOpenGL(GLfloat y, bool scaleOnly = false) {
+    // std::cout << "Params Y = (" << y << ", " << _gameHeight << ")" << std::endl;
 
     if (y < _gameHeight && _gameHeight > 0) {
       GLfloat scaleValue = (y / (GLfloat)_gameHeight) * 2.0f;
 
       if (!scaleOnly) {
-        return 1.0f - scaleValue;
+        return 1 - scaleValue;
       }
       else {
         return scaleValue;
@@ -62,7 +70,7 @@ class CoordinateHelper
   
 
  private:
-  static GLint _gameWidth, _gameHeight;
+  static GLfloat _gameWidth, _gameHeight;
 };
 
 #endif
