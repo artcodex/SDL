@@ -146,13 +146,18 @@ int main(int argc, char *argv[])
 	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
 
 	printf("OpenGL version %d.%d\n", majorVersion, minorVersion);
-	
+
+  CoordinateHelper::InitializeWorld();
+
 	GLuint programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
   GLuint texID = glGetUniformLocation(programID, "myTextureSampler");
+  GLuint matID = glGetUniformLocation(programID, "MVP");
+
+  CoordinateHelper::setShaderMatrix(matID);
 
 	static const GLfloat g_vertex_buffer_data[] = {
 		-0.5f, -0.5f, 0.0f,
@@ -191,6 +196,12 @@ int main(int argc, char *argv[])
 		{
 			switch(event.type)
 			{
+        case SDL_MOUSEBUTTONDOWN:
+          rectangle.AddForce(b2Vec2(50.0f,50.0f));
+          rectangle2.AddForce(b2Vec2(50.0f,50.0f));
+          rectangle3.AddForce(b2Vec2(50.0f,50.0f));
+          rectangle4.AddForce(b2Vec2(50.0f,50.0f));
+          break;
 				case SDL_QUIT:
 					gameover = 1;
 					break;

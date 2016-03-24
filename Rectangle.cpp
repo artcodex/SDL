@@ -23,12 +23,8 @@ void Rectangle::SetBounds(GLfloat left, GLfloat top, GLfloat width, GLfloat heig
   _height = height; 
 }
 
-bool Rectangle::Update() {
-
-  if (_buffer) {
-    delete _buffer;
-  }
-
+bool Rectangle::Update() 
+{
   //if (_density > 5.0) {
   //std::cout << "Applying a force" << std::endl;
     //_body->ApplyForce(b2Vec2(50, 50), _body->GetWorldCenter(), true);
@@ -39,36 +35,54 @@ bool Rectangle::Update() {
     _left = pos.x;
     _top = -pos.y;
     //std::cout << "Top = " << _top << std::endl;
-  }
+    }
 
   _numVertices = RECTANGLE_VERTICES_COUNT;
   _bufferSize = _numVertices * 3;
-  //std::cout << _bufferSize << std::endl;
+
+  _model = glm::mat4(1);
+  glm::mat4 rot(1.0f);
+
+  if (_density > 15.0f) {
+    float32 angle = _body->GetAngle();
+    float32 degrees = glm::degrees(angle);
+
+    while (degrees < 0.0f)
+      degrees += 360;
+
+    while (degrees > 360.0f)
+      degrees -= 360;
+
+    //std::cout << "degrees = " << degrees << std::endl;
+    //std::cout << "angular = " << _body->GetAngularVelocity() << std::endl;
+    rot = glm::rotate(glm::mat4(1.0f), degrees, glm::vec3(0.0f, 0.0f, 1.0f));
+  }
 
   GLfloat fLeft   = CoordinateHelper::TranslateXToOpenGL(_left);
-  GLfloat fWidth  = CoordinateHelper::TranslateXToOpenGL(_width, true);
   GLfloat fTop    = CoordinateHelper::TranslateYToOpenGL(_top);
-  GLfloat fHeight = CoordinateHelper::TranslateYToOpenGL(_height, true);
 
-  //std::cout << "Params = (" << fTop << ", " << fLeft << ", " << fWidth << ", " << fHeight << ")" << std::endl;
+  _trans = glm::translate(glm::mat4(1.0f), glm::vec3(fLeft, fTop, 0.0f));
 
-  _buffer = new GLfloat[_bufferSize] {
-    fLeft, fTop, 0.0f,
-    fLeft, fTop - fHeight, 0.0f,
-    fLeft + fWidth, fTop - fHeight, 0.0f,
-    fLeft + fWidth, fTop - fHeight, 0.0f,
-    fLeft + fWidth, fTop, 0.0f,
-    fLeft, fTop, 0.0f
-  };
-
-  glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, _bufferSize * sizeof(GLfloat), _buffer, GL_STATIC_DRAW);
+  //std::cout << glm::to_string(_trans) << std::endl;
+  _model = _trans * rot;
 
   return true;
 }
 
+void Rectangle::AddForce(b2Vec2 force) {
+  if (_body) {
+    std::cout << "Applying impulse ..." << std::endl;
+    //_body->ApplyForce(force, _body->GetWorldCenter(), false);
+    _body->SetLinearVelocity(force);
+  }
+}
+
 bool Rectangle::Initialize()
 {
+  //Initialize the model matrix to identity
+  _model = glm::mat4(1.0f);
+  //_model = glm::rotate(_model, 30.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+
   //Initialize the physics geometry
   b2BodyDef bodyDef;
   if (_density > 11.0f) {
@@ -93,7 +107,7 @@ bool Rectangle::Initialize()
   mass.center = b2Vec2(0.0f, 0.0f);
   mass.I = 0;
 
-  _body->SetMassData(&mass);
+  //_body->SetMassData(&mass);
 
   if (_body) {
     _body->CreateFixture(&fixtureDef);
@@ -104,32 +118,33 @@ bool Rectangle::Initialize()
 
   if (_density > 11.0) {
   //std::cout << "Applying a force" << std::endl;
-    _body->SetLinearVelocity(b2Vec2(_density, -10*_density));
+    //_body->SetLinearVelocity(b2Vec2(_density, -10*_density));
   }
-  //b2Vec2 v = _body->GetWorldVector(b2Vec2(_density, -4*_density));
-  // b2Vec2 v = _body->GetWorldVector(b2Vec2(0.0f, -200.0f));
-  // std::cout << "Vector is (" << v.x << ", " << v.y << ")" << std::endl;
-  //   _body->ApplyForce(v, _body->GetWorldCenter(), true);
-  //   std::cout << "Linear = " << _density << ", " << -4*_density << std::endl;
-  //   std::cout << "Body = " << _body << std::endl;
-    //}
 
-  
-  // for (int i=0; i < _bufferSize; i++)
-  //   {
-  //     std::cout << _buffer[i] << " ";
+  GLfloat fLeft   = CoordinateHelper::TranslateXToOpenGL(_left);
+  GLfloat fWidth  = CoordinateHelper::TranslateXToOpenGL(_width, true);
+  GLfloat fTop    = CoordinateHelper::TranslateYToOpenGL(_top);
+  GLfloat fHeight = CoordinateHelper::TranslateYToOpenGL(_height, true);
 
-  //     if (((i + 1) % 3) == 0) {
-  //       std::cout << std::endl;
-  //     }
-  //   }
-
-  // std::cout << std::endl;
+  _trans = glm::translate(glm::mat4(1.0f), glm::vec3(fLeft, fTop, 0.0f));
 
   _numVertices = RECTANGLE_VERTICES_COUNT;
   _bufferSize = _numVertices * 3;
   std::cout << _bufferSize << std::endl;
 
  	glGenBuffers(1, &_vertexBuffer);
+  _buffer = new GLfloat[_bufferSize] {
+    -(fWidth / 2.0f), (fHeight / 2.0f), 0.0f,
+    -(fWidth / 2.0f), -(fHeight / 2.0f), 0.0f,
+    (fWidth / 2.0f), -(fHeight / 2.0f), 0.0f,
+    (fWidth / 2.0f), -(fHeight / 2.0f), 0.0f,
+    (fWidth / 2.0f), (fHeight / 2.0f), 0.0f,
+    -(fWidth / 2.0f), (fHeight / 2.0f), 0.0f
+  };
+
+
+  glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, _bufferSize * sizeof(GLfloat), _buffer, GL_STATIC_DRAW); 
+
 	return true;
 }

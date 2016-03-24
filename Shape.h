@@ -12,6 +12,8 @@ class Shape
   GLuint _vertexBuffer;
   GLint _bufferSize;
   GLfloat *_buffer;
+  GLuint *_indices;
   GLint _numVertices;
+  glm::mat4 _model;
 };
 #endif

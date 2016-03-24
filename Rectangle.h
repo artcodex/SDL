@@ -13,6 +13,7 @@ class Rectangle : public Shape
   virtual bool Update() override;
   ~Rectangle();
   void SetBounds(GLfloat left, GLfloat top, GLfloat width, GLfloat height);
+  void AddForce(b2Vec2 force);
  protected:
   GLfloat _top;
   GLfloat _left;
@@ -20,6 +21,7 @@ class Rectangle : public Shape
   GLfloat _height;
   b2Body* _body;
   float32 _density;
+  glm::mat4 _trans;
 };
 
 #endif

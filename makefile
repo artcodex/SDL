@@ -3,7 +3,7 @@ SDL = -framework SDL2
 OPENGL = -framework OpenGL
 BOX2D = -lBox2D
 
-CXXFLAGS = -F/Library/Frameworks -I/Users/avibrenner/Documents/Projects/Box2D/Box2D -Wall -c -std=c++11
+CXXFLAGS = -F/Library/Frameworks -I/Users/avibrenner/Documents/Projects/SDL/glm -I/Users/avibrenner/Documents/Projects/Box2D/Box2D -Wall -c -std=c++11
 LDFLAGS = -F/Library/Frameworks -L/usr/local/lib $(SDL) $(OPENGL) $(BOX2D)
 LIBS = $(BOX2D)
 EXE = test
