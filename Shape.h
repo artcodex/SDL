@@ -13,6 +13,7 @@ class Shape
   GLint _bufferSize;
   GLfloat *_buffer;
   GLuint *_indices;
+  GLuint _indexBuffer;
   GLint _numVertices;
   glm::mat4 _model;
 };

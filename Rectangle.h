@@ -4,6 +4,7 @@
 #include "Shape.h"
 
 #define RECTANGLE_VERTICES_COUNT 6
+#define RECTANGLE_DISTINCT_VERTICES 4
 
 class Rectangle : public Shape
 {

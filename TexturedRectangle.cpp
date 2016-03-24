@@ -49,17 +49,15 @@ bool TexturedRectangle::Initialize() {
       std::cout << "Setting up texture: " << _filename << std::endl;
 
       std::cout << "Setting up the uv matrix ..." << std::endl;
-      _uvBuffer = new GLfloat[_numVertices*2] {
+      _uvBuffer = new GLfloat[RECTANGLE_DISTINCT_VERTICES*2] {
         0.0f, 0.0f,
         0.0f, 1.0f,
         1.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f
+        1.0f, 0.0f
       };
 
       std::cout << "UV coord space: " << std::endl;
-      for (int i=0; i < _numVertices*2; i++)
+      for (int i=0; i < RECTANGLE_DISTINCT_VERTICES*2; i++)
         {
           std::cout << _uvBuffer[i] << " ";
 
@@ -72,7 +70,7 @@ bool TexturedRectangle::Initialize() {
 
       glGenBuffers(1, &_uvBufferID);
       glBindBuffer(GL_ARRAY_BUFFER, _uvBufferID);
-      glBufferData(GL_ARRAY_BUFFER, (_numVertices * 2) * sizeof(GLfloat), _uvBuffer, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, (RECTANGLE_DISTINCT_VERTICES * 2) * sizeof(GLfloat), _uvBuffer, GL_STATIC_DRAW);
 
       glGenTextures(1, &_textureID);
       glBindTexture(GL_TEXTURE_2D, _textureID);

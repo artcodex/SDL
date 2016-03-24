@@ -129,22 +129,35 @@ bool Rectangle::Initialize()
   _trans = glm::translate(glm::mat4(1.0f), glm::vec3(fLeft, fTop, 0.0f));
 
   _numVertices = RECTANGLE_VERTICES_COUNT;
-  _bufferSize = _numVertices * 3;
+  _bufferSize = RECTANGLE_DISTINCT_VERTICES * 3;
   std::cout << _bufferSize << std::endl;
 
  	glGenBuffers(1, &_vertexBuffer);
+
   _buffer = new GLfloat[_bufferSize] {
     -(fWidth / 2.0f), (fHeight / 2.0f), 0.0f,
     -(fWidth / 2.0f), -(fHeight / 2.0f), 0.0f,
     (fWidth / 2.0f), -(fHeight / 2.0f), 0.0f,
-    (fWidth / 2.0f), -(fHeight / 2.0f), 0.0f,
     (fWidth / 2.0f), (fHeight / 2.0f), 0.0f,
-    -(fWidth / 2.0f), (fHeight / 2.0f), 0.0f
+  };
+
+  glGenBuffers(1, &_indexBuffer);
+
+  _indices = new GLuint[_numVertices] {
+    0,
+    1,
+    2,
+    2,
+    3,
+    0
   };
 
 
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, _bufferSize * sizeof(GLfloat), _buffer, GL_STATIC_DRAW); 
+	glBufferData(GL_ARRAY_BUFFER, _bufferSize * sizeof(GLfloat), _buffer, GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, _numVertices * sizeof(GLuint), _indices, GL_STATIC_DRAW);
 
 	return true;
 }

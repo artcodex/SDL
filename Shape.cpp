@@ -25,7 +25,10 @@ bool Shape::Draw()
                         (void*)0
                         );
 
-  glDrawArrays(GL_TRIANGLES, 0, _numVertices);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+
+  //glDrawArrays(GL_TRIANGLES, 0, _numVertices);
+  glDrawElements(GL_TRIANGLES, _numVertices, GL_UNSIGNED_INT, (void*)0);
 
   return true;
 }
@@ -35,6 +38,13 @@ Shape::~Shape()
   if (_buffer)
   {
     delete _buffer;
+    _buffer = nullptr;
+  }
+
+  if (_indices)
+  {
+    delete _indices;
+    _indices = nullptr;
   }
 }
 
